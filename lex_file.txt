@@ -1,5 +1,52 @@
+#ifndef LEX_INCLUDED
+#define LEX_INCLUDED
+
+/* Copyright (c) 2000, 2010, Oracle and/or its affiliates.
+   Copyright (c) 2009, 2015, MariaDB
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; version 2 of the License.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1335  USA */
+
+
+/* This file includes all reserved words and functions */
 
 #include "lex_symbol.h"
+
+SYM_GROUP sym_group_common= {"", ""};
+SYM_GROUP sym_group_geom= {"Spatial extensions", "HAVE_SPATIAL"};
+SYM_GROUP sym_group_rtree= {"RTree keys", "HAVE_RTREE_KEYS"};
+
+/* We don't want to include sql_yacc.h into gen_lex_hash */
+#ifdef NO_YACC_SYMBOLS
+#define SYM_OR_NULL(A) 0
+#else
+#define SYM_OR_NULL(A) A
+#endif
+
+#define SYM(A) SYM_OR_NULL(A),0,&sym_group_common
+
+/*
+  Symbols are broken into separated arrays to allow field names with
+  same name as functions.
+  These are kept sorted for human lookup (the symbols are hashed).
+
+  NOTE! The symbol tables should be the same regardless of what features
+  are compiled into the server. Don't add ifdef'ed symbols to the
+  lists
+  NOTE!!
+  If you add or delete symbols from this file, you must also update results for
+  the perfschema.start_server_low_digest_sql_length test!
+*/
 
 static SYMBOL symbols[] = {
   { "&&",		SYM(AND_AND_SYM)},
@@ -742,3 +789,4 @@ static SYMBOL sql_functions[] = {
   { "VAR_SAMP",		SYM(VAR_SAMP_SYM)},
 };
 
+#endif /* LEX_INCLUDED */
